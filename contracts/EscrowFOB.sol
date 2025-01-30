@@ -12,4 +12,12 @@ contract EscrowFOB {
         seller = _seller;
         amount = msg.value;
     }
+
+    function confirmShipment() public {
+    require(msg.sender == seller, "Only seller can confirm shipment");
+    require(!isShipped, "Shipment already confirmed");
+    
+    isShipped = true;
+}
+
 }
