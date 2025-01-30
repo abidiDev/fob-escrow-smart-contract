@@ -19,5 +19,11 @@ contract EscrowFOB {
     
     isShipped = true;
 }
+function releaseFunds() public {
+    require(msg.sender == buyer, "Only buyer can release funds");
+    require(isShipped, "Shipment must be confirmed before release");
+
+    payable(seller).transfer(amount);
+}
 
 }
