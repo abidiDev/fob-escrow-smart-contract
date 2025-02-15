@@ -35,7 +35,6 @@ contract EscrowFOB {
         amount = msg.value; 
     }
 
-    
     /**
      * @dev Permet au vendeur de confirmer que la marchandise a été expédiée.
      * Émet un événement `ShipmentConfirmed`.
@@ -47,7 +46,6 @@ contract EscrowFOB {
         emit ShipmentConfirmed(seller); 
     }
 
-    
     /**
      * @dev Permet à l'acheteur de libérer les fonds après confirmation de l'expédition.
      * Émet un événement `FundsReleased`.
