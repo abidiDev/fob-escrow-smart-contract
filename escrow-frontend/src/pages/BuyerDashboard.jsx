@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import EscrowABI from "../../../../artifacts/contracts/EscrowFOB.sol/EscrowFOB.json";
+import EscrowABI from "../../../artifacts/contracts/EscrowFOB.sol/EscrowFOB.json";
 
-const contractAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9";
+const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
 const contractABI = EscrowABI.abi;
 
-const SellerDashboard = () => {
+const BuyerDashboard = () => {
     const [account, setAccount] = useState("");
     const [contractData, setContractData] = useState({
         buyer: "",
@@ -41,7 +41,7 @@ const SellerDashboard = () => {
         fetchContractData();
     }, []);
 
-    const confirmShipment = async () => {
+    const releaseFunds = async () => {
         if (!window.ethereum) {
             setError("MetaMask n'est pas installé.");
             return;
@@ -52,13 +52,13 @@ const SellerDashboard = () => {
             const signer = await provider.getSigner();
             const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-            if (account !== contractData.seller) {
-                throw new Error("Seul le vendeur peut confirmer l'expédition.");
+            if (account.toLowerCase() !== contractData.buyer.toLowerCase()) {
+                throw new Error("Seul l'acheteur peut libérer les fonds.");
             }
 
-            const tx = await contract.confirmShipment();
+            const tx = await contract.releaseFunds();
             await tx.wait();
-            alert("Expédition confirmée !");
+            alert("Fonds libérés avec succès !");
         } catch (error) {
             setError(error.message);
         }
@@ -66,15 +66,15 @@ const SellerDashboard = () => {
 
     return (
         <div className="dashboard-container">
-            <h2>Tableau de bord Vendeur</h2>
+            <h2>Tableau de bord Acheteur</h2>
             <p><strong>Compte :</strong> {account}</p>
             <p><strong>Expédition confirmée :</strong> {contractData.isShipped ? "Oui ✅" : "Non ❌"}</p>
             <p><strong>Solde du contrat :</strong> {contractData.balance} ETH</p>
             {error && <p className="error">Erreur : {error}</p>}
-            <button onClick={confirmShipment}>Confirmer l'expédition</button>
+            <button onClick={releaseFunds}>Libérer les fonds</button>
             <button onClick={() => window.location.href = "/"}>Déconnexion</button>
         </div>
     );
 };
 
-export default SellerDashboard;
+export default BuyerDashboard;
